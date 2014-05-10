@@ -59,20 +59,15 @@ ADD Gemfile Gemfile
 ADD Gemfile.lock Gemfile.lock
 RUN bundle install
 
-ADD . /srv/linuxfr
-
-WORKDIR /srv/linuxfr
-RUN cp config/database.yml.sample config/database.yml
-RUN cp config/secrets.yml.sample config/secrets.yml
+VOLUME ["/srv/linuxfr"]
 
 WORKDIR /root
 ADD docker-files/mysql-init.sh /root/mysql-init.sh
-RUN sh /root/mysql-init.sh
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 RUN echo "root:docker" | chpasswd
 
-EXPOSE 22 3000
+EXPOSE 22 3000 3306
 
 CMD /usr/bin/supervisord -n
 
